@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.15.4"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         :root {
             --font-en: 'Inter', sans-serif;
@@ -83,24 +83,11 @@
         #music-player {
             transition: transform 0.3s ease;
         }
-        /* Markmap Styling */
-        .markmap-node text {
-            fill: #E4E4E7;
-            font-family: var(--font-en);
-        }
-        html[lang="ar"] .markmap-node text {
-            font-family: var(--font-ar);
-        }
-        .markmap-node line {
-            stroke: #4A5568;
-        }
-        .markmap-node circle {
-            stroke: #4F46E5;
-        }
     </style>
 </head>
 <body class="flex h-screen">
 
+    <!-- Sidebar -->
     <aside class="sidebar w-72 flex-shrink-0 p-6 hidden md:flex flex-col justify-between overflow-y-auto">
         <div>
             <h1 class="text-2xl font-bold text-white mb-8">StudyBase</h1>
@@ -114,7 +101,6 @@
                 <h3 class="sidebar-heading" data-lang-key="sidebar_learning_tools">Learning Tools</h3>
                 <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="summarize"><i class="fas fa-file-alt w-5 text-center"></i><span data-lang-key="feature_title_summarize">Text Summarizer</span></a>
                 <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="quiz_generator"><i class="fas fa-question-circle w-5 text-center"></i><span data-lang-key="feature_title_quiz_generator">AI Quiz Maker</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="mind_map"><i class="fas fa-project-diagram w-5 text-center"></i><span data-lang-key="feature_title_mind_map">Mind Map Generator</span></a>
                 <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="tutor"><i class="fas fa-user-graduate w-5 text-center"></i><span data-lang-key="feature_title_tutor">AI Tutor</span></a>
                 <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="speaking_practice"><i class="fas fa-microphone-alt w-5 text-center"></i><span data-lang-key="feature_title_speaking_practice">Speaking Practice</span></a>
 
@@ -133,9 +119,12 @@
         </div>
     </aside>
 
+    <!-- Main Content -->
     <div id="main-content-area" class="main-content flex-1 flex flex-col overflow-y-auto">
-        </div>
+        <!-- This will be populated by JS -->
+    </div>
 
+    <!-- Feature Modal -->
     <div id="feature-modal" class="modal fixed inset-0 flex items-center justify-center z-50 p-4">
         <div class="modal-content-area rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
             <div class="p-6 border-b border-zinc-700 flex justify-between items-center"><h3 id="modal-title" class="text-xl font-bold text-white" data-lang-key="modal_feature_title">Feature</h3><button id="modal-close-btn" class="text-zinc-500 hover:text-white text-2xl">&times;</button></div>
@@ -143,9 +132,11 @@
         </div>
     </div>
 
+    <!-- Auth Modal & Mobile Menu Modal -->
     <div id="auth-modal" class="modal fixed inset-0 flex items-center justify-center z-50 p-4"><div class="modal-content-area rounded-lg shadow-2xl w-full max-w-md text-center p-8"><h3 class="text-2xl font-bold text-white mb-4" data-lang-key="auth_modal_title">Create an Account to Save</h3><p class="text-zinc-400 mb-6" data-lang-key="auth_modal_desc">Sign up to save your history and unlock all features.</p><button class="w-full px-6 py-3 text-white font-semibold rounded-lg btn-primary" data-lang-key="auth_modal_signup">Sign Up Now</button><button id="auth-modal-close-btn" class="mt-4 text-zinc-500 hover:text-zinc-300" data-lang-key="auth_modal_later">Maybe Later</button></div></div>
     <div id="mobile-menu-modal" class="modal fixed inset-0 z-50"><div class="sidebar w-72 h-full p-6 flex flex-col justify-between"><div id="mobile-nav-content"></div><div><button id="mobile-login-signup-btn" class="w-full text-left flex items-center space-x-3 text-zinc-400 hover:text-white"><i class="fas fa-user-circle w-5 text-center"></i><span data-lang-key="login_signup">Login / Sign Up</span></button></div></div></div>
     
+    <!-- Music Player -->
     <div id="music-player" class="fixed bottom-5 right-5 bg-zinc-800 p-3 rounded-lg shadow-lg flex items-center gap-4 transform translate-y-24">
         <button id="music-play-pause" class="text-xl"><i class="fas fa-play"></i></button>
         <div class="text-sm">
@@ -155,6 +146,7 @@
         <button id="music-next" class="text-lg"><i class="fas fa-forward"></i></button>
     </div>
 
+    <!-- Audio files for sound effects -->
     <audio id="alarm-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_593d052b1b.mp3" preload="auto"></audio>
     <audio id="task-complete-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_23b3757271.mp3" preload="auto"></audio>
     <audio id="celebration-sound" src="https://cdn.pixabay.com/download/audio/2022/09/23/audio_27b4a3b60e.mp3" preload="auto"></audio>
@@ -167,17 +159,6 @@
                 page_title_dashboard: "Dashboard",
                 sidebar_planning: "Planning & Focus",
                 sidebar_learning_tools: "Learning Tools",
-                sidebar_writing_research: "Writing & Research",
-                sidebar_career_prep: "Career Prep",
-                feature_title_ai_study_plan: "AI Study Plan Generator",
-                feature_title_pomodoro: "Pomodoro Timer",
-                feature_title_summarize: "Text Summarizer",
-                feature_title_quiz_generator: "AI Quiz Maker",
-                feature_title_mind_map: "Mind Map Generator",
-                feature_title_tutor: "AI Tutor",
-                feature_title_speaking_practice: "Speaking Practice",
-                feature_title_essay_assistant: "Essay Assistant",
-                feature_title_resume_builder: "AI Resume Builder",
                 main_title: "The Future of <br/> Learning is Here",
                 main_subtitle: "Leverage the power of AI for everything from summarizing articles and generating flashcards to acing your next interview.",
                 explore_tools: "Explore The Tools",
@@ -192,17 +173,6 @@
                 page_title_dashboard: "لوحة التحكم",
                 sidebar_planning: "التخطيط والتركيز",
                 sidebar_learning_tools: "أدوات التعلم",
-                sidebar_writing_research: "الكتابة والبحث",
-                sidebar_career_prep: "التحضير الوظيفي",
-                feature_title_ai_study_plan: "منشئ خطة دراسية ذكي",
-                feature_title_pomodoro: "مؤقت بومودورو",
-                feature_title_summarize: "ملخص نصوص",
-                feature_title_quiz_generator: "صانع اختبارات ذكي",
-                feature_title_mind_map: "مولد الخرائط الذهنية",
-                feature_title_tutor: "مدرس ذكاء اصطناعي",
-                feature_title_speaking_practice: "ممارسة التحدث",
-                feature_title_essay_assistant: "مساعد المقالات",
-                feature_title_resume_builder: "باني السيرة الذاتية الذكي",
                 main_title: "مستقبل التعليم <br/> هنا",
                 main_subtitle: "استفد من قوة الذكاء الاصطناعي في كل شيء، من تلخيص المقالات وإنشاء البطاقات التعليمية إلى التفوق في مقابلتك التالية.",
                 explore_tools: "استكشف الأدوات",
@@ -221,11 +191,11 @@
                 pomodoro: { title: 'Pomodoro Timer', desc: 'Boost your focus with the Pomodoro Technique.', work: 'Work', short_break: 'Short Break', long_break: 'Long Break', start: 'Start', pause: 'Pause', reset: 'Reset', tasks_title: 'Session Tasks', add_task_placeholder: 'Add a new task...' },
                 summarize: { title: 'Text Summarizer', desc: 'Condense long articles, papers, or notes into key bullet points.', placeholder: 'Paste your text here...', button: 'Summarize Text' },
                 quiz_generator: { title: 'AI Quiz Maker', desc: 'Test your knowledge. Paste your study material to generate a multiple-choice quiz.', placeholder: 'Paste your study material here...', button: 'Generate Quiz' },
-                mind_map: { title: 'AI Mind Map Generator', desc: 'Organize your thoughts visually. Input a topic or text, and the AI will create a structured mind map.', placeholder: 'e.g., The key themes of Hamlet, or paste your notes here.', button: 'Generate Mind Map' },
                 tutor: { title: 'AI Tutor', desc: 'Your 24/7 homework helper. Ask any academic question and get a detailed answer.', placeholder: 'e.g., What were the main causes of the French Revolution?', button: 'Ask Question' },
                 speaking_practice: { title: 'Speaking Practice', desc: 'Practice your conversational skills. Choose a topic to discuss with the AI.', placeholder: 'Enter a topic, e.g., "travel" or "technology"', button: 'Start Conversation' },
                 essay_assistant: { title: 'Essay Assistant', desc: 'Beat writer\'s block. Get help with outlines, thesis statements, or counter-arguments.', placeholder: 'Enter your essay topic or paste your draft here...', button: 'Get Assistance' },
                 courses: { title: 'Course Tips', desc: 'Enter a course name to get helpful tips, key concepts, and study strategies.', placeholder: 'e.g., "Calculus II" or "Intro to Psychology"', button: 'Get Tips' },
+                math_solver: { title: 'Math Problem Solver', desc: 'Get step-by-step solutions to math problems.', placeholder: 'e.g., Solve for x: 2x + 5 = 15', button: 'Solve Problem' },
                 code_explainer: { title: 'Code Explainer', desc: 'Paste any code snippet to get a detailed, line-by-line explanation.', placeholder: 'Paste your code here...', button: 'Explain Code' },
                 resume_builder: { title: 'AI Resume Builder', desc: 'Craft compelling, professional bullet points for your resume.', placeholder: 'Paste job description and/or your experience notes...', button: 'Generate Bullet Points', job_placeholder: 'Target Job Title' },
             },
@@ -234,11 +204,12 @@
                 pomodoro: { title: 'مؤقت بومودورو', desc: 'عزز تركيزك باستخدام تقنية بومودورو.', work: 'عمل', short_break: 'استراحة قصيرة', long_break: 'استراحة طويلة', start: 'ابدأ', pause: 'إيقاف مؤقت', reset: 'إعادة ضبط', tasks_title: 'مهام الجلسة', add_task_placeholder: 'أضف مهمة جديدة...' },
                 summarize: { title: 'ملخص نصوص', desc: 'لخص المقالات الطويلة أو الأبحاث أو الملاحظات في نقاط رئيسية.', placeholder: 'الصق النص هنا...', button: 'لخص النص' },
                 quiz_generator: { title: 'صانع اختبارات ذكي', desc: 'اختبر معلوماتك. الصق مادة الدراسة الخاصة بك لإنشاء اختبار متعدد الخيارات.', placeholder: 'الصق مادة الدراسة هنا...', button: 'أنشئ اختبارًا' },
-                mind_map: { title: 'مولد الخرائط الذهنية بالذكاء الاصطناعي', desc: 'نظم أفكارك بصريًا. أدخل موضوعًا أو نصًا، وسيقوم الذكاء الاصطناعي بإنشاء خريطة ذهنية منظمة.', placeholder: 'مثال: الموضوعات الرئيسية في مسرحية هاملت، أو الصق ملاحظاتك هنا.', button: 'أنشئ الخريطة الذهنية' },
                 tutor: { title: 'مدرس ذكاء اصطناعي', desc: 'مساعدك في الواجبات المنزلية على مدار الساعة. اطرح أي سؤال أكاديمي واحصل على إجابة مفصلة.', placeholder: 'مثال: ما هي الأسباب الرئيسية للثورة الفرنسية؟', button: 'اطرح سؤالاً' },
                 speaking_practice: { title: 'ممارسة التحدث', desc: 'مارس مهاراتك في المحادثة. اختر موضوعًا للمناقشة مع الذكاء الاصطناعي.', placeholder: 'أدخل موضوعًا، مثل "السفر" أو "التكنولوجيا"', button: 'ابدأ المحادثة' },
                 essay_assistant: { title: 'مساعد المقالات', desc: 'تغلب على حصار الكاتب. احصل على مساعدة في الخطوط العريضة والأطروحات والحجج المضادة.', placeholder: 'أدخل موضوع مقالتك أو الصق مسودتك هنا...', button: 'احصل على مساعدة' },
                 courses: { title: 'نصائح للمواد', desc: 'أدخل اسم مادة للحصول على نصائح مفيدة ومفاهيم رئيسية واستراتيجيات دراسة.', placeholder: 'مثال: "حساب التفاضل والتكامل 2"', button: 'احصل على نصائح' },
+                math_solver: { title: 'حل مسائل الرياضيات', desc: 'احصل على حلول خطوة بخطوة لمسائل الرياضيات.', placeholder: 'مثال: حل لـ س: 2س + 5 = 15', button: 'حل المسألة' },
+                code_explainer: { title: 'شرح الأكواد', desc: 'الصق أي مقطع برمجي للحصول على شرح مفصل سطرًا بسطر.', placeholder: 'الصق الكود هنا...', button: 'اشرح الكود' },
                 resume_builder: { title: 'باني السيرة الذاتية الذكي', desc: 'صياغة نقاط قوية واحترافية لسيرتك الذاتية.', placeholder: 'الصق وصف الوظيفة و/أو ملاحظات خبرتك...', button: 'أنشئ نقاط السيرة الذاتية', job_placeholder: 'المسمى الوظيفي المستهدف' },
             }
         };
@@ -316,11 +287,11 @@
             
             mobileNavContent.querySelectorAll('[data-feature], [data-page]').forEach(link => {
                  link.addEventListener('click', (e) => {
-                     e.preventDefault();
-                     if(link.dataset.feature) openFeatureModal(features[link.dataset.feature]);
-                     if(link.dataset.page) renderPage(link.dataset.page);
-                     closeModal(mobileMenuModal);
-                 });
+                    e.preventDefault();
+                    if(link.dataset.feature) openFeatureModal(features[link.dataset.feature]);
+                    if(link.dataset.page) renderPage(link.dataset.page);
+                    closeModal(mobileMenuModal);
+                });
             });
         }
         
@@ -343,8 +314,8 @@
                     <div class="flex items-center gap-6">
                          <button id="mobile-menu-button-main" class="md:hidden"><i class="fas fa-bars text-xl"></i></button>
                          <div class="hidden md:flex items-center gap-4 text-zinc-400">
-                             <div><i class="fas fa-star text-yellow-400"></i> <span id="user-points">${userPoints}</span></div>
-                             <div><i class="fas fa-fire text-orange-500"></i> <span id="user-streak">${userStreak}</span></div>
+                            <div><i class="fas fa-star text-yellow-400"></i> <span id="user-points">${userPoints}</span></div>
+                            <div><i class="fas fa-fire text-orange-500"></i> <span id="user-streak">${userStreak}</span></div>
                          </div>
                     </div>
                     <button id="lang-switcher-main" class="px-4 py-2 text-sm font-semibold bg-zinc-800 rounded-md hover:bg-zinc-700">${currentLang === 'en' ? 'العربية' : 'English'}</button>
@@ -354,23 +325,23 @@
         
         function renderDashboard() {
             document.body.dataset.currentPage = 'dashboard';
-            const featureKeys = ['summarize', 'quiz_generator', 'mind_map', 'pomodoro', 'courses', 'resume_builder'];
+            const featureKeys = ['summarize', 'quiz_generator', 'pomodoro', 'courses', 'code_explainer', 'resume_builder'];
             
             let featureCardsHtml = featureKeys.map((key, i) => {
                 const d = featuresData[currentLang][key] || featuresData['en'][key];
                 const iconMap = {
                     summarize: 'fa-file-alt text-blue-400',
                     quiz_generator: 'fa-question-circle text-green-400',
-                    mind_map: 'fa-project-diagram text-teal-400',
                     pomodoro: 'fa-clock text-orange-400',
                     courses: 'fa-school text-cyan-400',
+                    code_explainer: 'fa-code text-indigo-400',
                     resume_builder: 'fa-file-invoice text-purple-400'
                 };
                 return `
-                <div class="feature-card bg-zinc-900 hover:bg-zinc-800/50 border border-zinc-800 p-6 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-105" data-feature="${key}">
+                <div class="feature-card animated-element p-6 rounded-xl cursor-pointer" data-feature="${key}" style="animation-delay: ${0.3 + i*0.1}s;">
                     <i class="fas ${iconMap[key]} text-2xl mb-4"></i>
-                    <h4 class="text-lg font-semibold mb-2 text-white">${d.title}</h4>
-                    <p class="text-zinc-400 text-sm">${d.desc}</p>
+                    <h4 class="text-xl font-semibold mb-2 text-white">${d.title}</h4>
+                    <p class="text-zinc-400">${d.desc}</p>
                 </div>`;
             }).join('');
 
@@ -381,7 +352,7 @@
                         <h2 class="text-4xl md:text-6xl font-extrabold text-white leading-tight animated-element" data-lang-key="main_title">${langData[currentLang].main_title}</h2>
                         <p class="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto animated-element" data-lang-key="main_subtitle" style="animation-delay: 0.1s;">${langData[currentLang].main_subtitle}</p>
                     </div>
-                    <div id="features" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-16">
+                    <div id="features" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-20">
                         ${featureCardsHtml}
                     </div>
                 </main>
@@ -443,13 +414,11 @@
         }
         
         function renderPage(page) {
-             if (isGuest && page === 'dashboard') {
-                renderDashboard();
-             } else if (!isGuest && page === 'dashboard') {
+            if (page === 'dashboard') {
                 renderProductivityDashboard();
-             } else {
+            } else {
                 renderDashboard();
-             }
+            }
         }
 
         document.querySelectorAll('[data-page]').forEach(link => {
@@ -471,10 +440,10 @@
 
         async function callGemini(prompt, outputElement) {
             const loadingSpinner = `<div class="flex justify-center items-center p-8"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-400"></div></div>`;
-            if (outputElement) outputElement.innerHTML = loadingSpinner;
+            outputElement.innerHTML = loadingSpinner;
             const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
             const apiKey = "AIzaSyAlJKRziOoxaPzxBQtZFmBhxjblOmfIXDU"; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
             try {
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) {
@@ -504,7 +473,7 @@
         const commonOutputDiv = `<div id="ai-output" class="mt-6 p-4 bg-zinc-900 border border-zinc-700 rounded-md min-h-[100px] whitespace-pre-wrap"></div>`;
         
         const features = {
-            ai_study_plan: { key: 'ai_study_plan', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder, 'h-32')}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء وصف أهدافك." : "Please describe your goals."; return; } const prompt = `Act as an academic advisor. Create a weekly study plan based on the following student's goals and constraints. The output should be a clear, day-by-day schedule in a markdown table format.\n\nGoals: ${text}`; const result = await callGemini(prompt, outputDiv); outputDiv.innerHTML = result.replace(/\n/g, '<br>').replace(/\|/g, '&nbsp;|&nbsp;'); }) },
+            ai_study_plan: { key: 'ai_study_plan', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder, 'h-32')}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء وصف أهدافك." : "Please describe your goals."; return; } const prompt = `Act as an academic advisor. Create a weekly study plan based on the following student's goals and constraints. The output should be a clear, day-by-day schedule in a markdown table format.\n\nGoals: ${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
             pomodoro: {
                 key: 'pomodoro',
                 getContent: (d) => `
@@ -532,70 +501,120 @@
                     </div>
                 `,
                 init: () => {
-                    let timer; let time = 25 * 60; let mode = 'work'; let sessions = 0; let isPaused = true;
-                    const timeDisplay = document.getElementById('pomodoro-time'); const modeDisplay = document.getElementById('pomodoro-mode'); const sessionsDisplay = document.getElementById('pomodoro-sessions'); const startBtn = document.getElementById('pomodoro-start'); const pauseBtn = document.getElementById('pomodoro-pause'); const resetBtn = document.getElementById('pomodoro-reset'); const taskInput = document.getElementById('pomodoro-new-task'); const addTaskBtn = document.getElementById('pomodoro-add-task'); const taskList = document.getElementById('pomodoro-tasks');
-                    const updateDisplay = () => { const minutes = Math.floor(time / 60); const seconds = time % 60; timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; const d = featuresData[currentLang].pomodoro; modeDisplay.textContent = d[mode.replace('_', '')]; sessionsDisplay.textContent = `${currentLang === 'ar' ? 'الجلسات' : 'Sessions'}: ${sessions}`; };
-                    const switchMode = () => { alarmSound.play(); if (mode === 'work') { sessions++; addPoints(25); mode = (sessions % 4 === 0) ? 'long_break' : 'short_break'; time = (mode === 'long_break' ? 15 : 5) * 60; } else { mode = 'work'; time = 25 * 60; } isPaused = true; clearInterval(timer); updateDisplay(); };
-                    const tick = () => { if (time > 0) { time--; updateDisplay(); } else { switchMode(); } };
+                    let timer;
+                    let time = 25 * 60;
+                    let mode = 'work';
+                    let sessions = 0;
+                    let isPaused = true;
+
+                    const timeDisplay = document.getElementById('pomodoro-time');
+                    const modeDisplay = document.getElementById('pomodoro-mode');
+                    const sessionsDisplay = document.getElementById('pomodoro-sessions');
+                    const startBtn = document.getElementById('pomodoro-start');
+                    const pauseBtn = document.getElementById('pomodoro-pause');
+                    const resetBtn = document.getElementById('pomodoro-reset');
+                    const taskInput = document.getElementById('pomodoro-new-task');
+                    const addTaskBtn = document.getElementById('pomodoro-add-task');
+                    const taskList = document.getElementById('pomodoro-tasks');
+
+                    const updateDisplay = () => {
+                        const minutes = Math.floor(time / 60);
+                        const seconds = time % 60;
+                        timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                        const d = featuresData[currentLang].pomodoro;
+                        modeDisplay.textContent = d[mode.replace('_', '')];
+                        sessionsDisplay.textContent = `${currentLang === 'ar' ? 'الجلسات' : 'Sessions'}: ${sessions}`;
+                    };
+
+                    const switchMode = () => {
+                        alarmSound.play();
+                        if (mode === 'work') {
+                            sessions++;
+                            addPoints(25); // 25 points for a full pomodoro session
+                            mode = (sessions % 4 === 0) ? 'long_break' : 'short_break';
+                            time = (mode === 'long_break' ? 15 : 5) * 60;
+                        } else {
+                            mode = 'work';
+                            time = 25 * 60;
+                        }
+                        isPaused = true;
+                        clearInterval(timer);
+                        updateDisplay();
+                    };
+
+                    const tick = () => {
+                        if (time > 0) {
+                            time--;
+                            updateDisplay();
+                        } else {
+                            switchMode();
+                        }
+                    };
+
                     startBtn.addEventListener('click', () => { if (isPaused) { isPaused = false; timer = setInterval(tick, 1000); } });
                     pauseBtn.addEventListener('click', () => { isPaused = true; clearInterval(timer); });
                     resetBtn.addEventListener('click', () => { isPaused = true; clearInterval(timer); time = (mode === 'work' ? 25 : (mode === 'short_break' ? 5 : 15)) * 60; updateDisplay(); });
-                    const renderTasks = () => { taskList.innerHTML = ''; const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]'); tasks.forEach((task, index) => { const taskEl = document.createElement('div'); taskEl.className = `task-item flex items-center justify-between bg-zinc-800 p-2 rounded-md ${task.completed ? 'completed' : ''}`; taskEl.innerHTML = `<div class="flex items-center gap-3"><input type="checkbox" data-index="${index}" ${task.completed ? 'checked' : ''} class="form-checkbox h-5 w-5 bg-zinc-900 border-zinc-700 rounded text-indigo-600"><span>${task.text}</span></div><button data-index="${index}" class="text-red-500 hover:text-red-400">&times;</button>`; taskList.appendChild(taskEl); }); checkAllTasksCompleted(); };
-                    const checkAllTasksCompleted = () => { const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]'); if (tasks.length > 0 && tasks.every(t => t.completed)) { celebrationSound.play(); confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } }); addPoints(50); localStorage.removeItem('pomodoroTasks'); } };
-                    addTaskBtn.addEventListener('click', () => { if (taskInput.value.trim()) { const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]'); tasks.push({ text: taskInput.value.trim(), completed: false }); localStorage.setItem('pomodoroTasks', JSON.stringify(tasks)); taskInput.value = ''; renderTasks(); } });
-                    taskList.addEventListener('click', (e) => { const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]'); const index = e.target.dataset.index; if (e.target.type === 'checkbox') { tasks[index].completed = e.target.checked; if(e.target.checked) { taskCompleteSound.play(); addPoints(10); } else { userPoints -= 10; updateGamificationDisplay(); } } else if (e.target.tagName === 'BUTTON') { if(tasks[index].completed) userPoints -= 10; tasks.splice(index, 1); updateGamificationDisplay(); } localStorage.setItem('pomodoroTasks', JSON.stringify(tasks)); renderTasks(); });
-                    updateDisplay(); renderTasks();
-                }
-            },
-            summarize: { key: 'summarize', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال نص لتلخيصه." : "Please enter text to summarize."; return; } const prompt = `Summarize the following text into key bullet points:\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            quiz_generator: { key: 'quiz_generator', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم مادة لإنشاء اختبار منها." : "Please provide material to generate a quiz from."; return; } const prompt = `Generate a 5-question multiple-choice quiz from the text below. For each question, provide 4 options (A, B, C, D) and indicate the correct answer.\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            mind_map: {
-                key: 'mind_map',
-                getContent: (d) => `
-                    <p class="text-zinc-400 mb-4">${d.desc}</p>
-                    ${commonTextArea('text-input', d.placeholder, 'h-32')}
-                    ${commonButton('run-btn', d.button)}
-                    <div id="mindmap-container" class="mt-6 bg-zinc-900 border border-zinc-700 rounded-md min-h-[300px] w-full overflow-auto">
-                         <svg id="mindmap-svg" class="w-full h-full min-h-[300px]"></svg>
-                    </div>
-                `,
-                init: () => {
-                    const { Markmap, transformer } = window.markmap;
-                    let mm;
-                    document.getElementById('run-btn').addEventListener('click', async () => {
-                        const text = document.getElementById('text-input').value;
-                        const container = document.getElementById('mindmap-container');
 
-                        if (!text.trim()) {
-                            container.innerHTML = `<svg id="mindmap-svg" class="w-full h-full min-h-[300px]"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#71717A">${currentLang === 'ar' ? 'الرجاء إدخال موضوع.' : 'Please enter a topic.'}</text></svg>`;
-                            return;
+                    const renderTasks = () => {
+                        taskList.innerHTML = '';
+                        const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]');
+                        tasks.forEach((task, index) => {
+                            const taskEl = document.createElement('div');
+                            taskEl.className = `task-item flex items-center justify-between bg-zinc-800 p-2 rounded-md ${task.completed ? 'completed' : ''}`;
+                            taskEl.innerHTML = `<div class="flex items-center gap-3"><input type="checkbox" data-index="${index}" ${task.completed ? 'checked' : ''} class="form-checkbox h-5 w-5 bg-zinc-900 border-zinc-700 rounded text-indigo-600"><span>${task.text}</span></div><button data-index="${index}" class="text-red-500 hover:text-red-400">&times;</button>`;
+                            taskList.appendChild(taskEl);
+                        });
+                        checkAllTasksCompleted();
+                    };
+                    
+                    const checkAllTasksCompleted = () => {
+                        const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]');
+                        if (tasks.length > 0 && tasks.every(t => t.completed)) {
+                            celebrationSound.play();
+                            confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                            addPoints(50); // Bonus points for completing all tasks
+                            localStorage.removeItem('pomodoroTasks');
                         }
-                        const loadingSpinner = `<div class="flex justify-center items-center h-full"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-400"></div></div>`;
-                        container.innerHTML = loadingSpinner;
-                        
-                        const prompt = `Act as a mind mapping assistant. Convert the following text into a hierarchical markdown structure suitable for a mind map. Use a single hash (#) for the main topic, and then nested dashes (-) for sub-topics. Only output the markdown, with no other text, comments, or explanations. Example:\n# Main Topic\n- Point 1\n  - Sub-point 1.1\n- Point 2\n\nTEXT: ${text}`;
-                        const dummyOutput = document.createElement('div');
-                        const markdownResponse = await callGemini(prompt, dummyOutput);
-                        
-                        container.innerHTML = `<svg id="mindmap-svg" class="w-full h-full min-h-[300px]"></svg>`;
-                        const svgEl = container.querySelector('#mindmap-svg');
+                    };
 
-                        try {
-                            const cleanedMarkdown = markdownResponse.replace(/```markdown\n|```/g, '').trim();
-                            if (!cleanedMarkdown) throw new Error("AI returned empty markdown.");
-                            
-                            if (mm) mm.destroy();
-                            mm = Markmap.create(svgEl);
-                            const { root } = transformer.transform(cleanedMarkdown);
-                            mm.setData(root);
-                            mm.fit();
-                        } catch (error) {
-                            console.error("Markmap Error:", error);
-                            svgEl.innerHTML = `<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#E53E3E">${currentLang === 'ar' ? 'خطأ في إنشاء الخريطة.' : 'Error generating map.'}</text>`;
+                    addTaskBtn.addEventListener('click', () => {
+                        if (taskInput.value.trim()) {
+                            const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]');
+                            tasks.push({ text: taskInput.value.trim(), completed: false });
+                            localStorage.setItem('pomodoroTasks', JSON.stringify(tasks));
+                            taskInput.value = '';
+                            renderTasks();
                         }
                     });
+
+                    taskList.addEventListener('click', (e) => {
+                        const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]');
+                        const index = e.target.dataset.index;
+                        if (e.target.type === 'checkbox') {
+                            tasks[index].completed = e.target.checked;
+                            if(e.target.checked) {
+                                taskCompleteSound.play();
+                                addPoints(10);
+                            } else {
+                                userPoints -= 10; // remove points if unchecked
+                                updateGamificationDisplay();
+                            }
+                        } else if (e.target.tagName === 'BUTTON') {
+                            if(tasks[index].completed) userPoints -= 10; // remove points if deleted while completed
+                            tasks.splice(index, 1);
+                            updateGamificationDisplay();
+                        }
+                        localStorage.setItem('pomodoroTasks', JSON.stringify(tasks));
+                        renderTasks();
+                    });
+
+                    updateDisplay();
+                    renderTasks();
                 }
             },
+            // Other features remain the same, just add their keys
+            summarize: { key: 'summarize', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال نص لتلخيصه." : "Please enter text to summarize."; return; } const prompt = `Summarize the following text into key bullet points:\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
+            quiz_generator: { key: 'quiz_generator', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم مادة لإنشاء اختبار منها." : "Please provide material to generate a quiz from."; return; } const prompt = `Generate a 5-question multiple-choice quiz from the text below. For each question, provide 4 options (A, B, C, D) and indicate the correct answer.\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
             tutor: { key: 'tutor', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء طرح سؤال." : "Please ask a question."; return; } const prompt = `Answer the following student question clearly and comprehensively: "${text}"`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
             speaking_practice: { key: 'speaking_practice', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال موضوع." : "Please enter a topic."; return; } const prompt = `Start a conversation with me about "${text}". Ask me an open-ended question to begin.`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
             essay_assistant: { key: 'essay_assistant', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم موضوع أو مسودة." : "Please provide a topic or draft."; return; } const prompt = `Act as a writing tutor. Analyze the following essay topic/draft. Provide a potential thesis statement, a 3-point outline, and suggest one potential counter-argument to consider.\n\nTopic/Draft: ${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
@@ -634,6 +653,7 @@
         function loadTrack(index) {
             musicTrack.src = musicTracks[index].src;
             musicTitle.textContent = musicTracks[index].title;
+            // musicTrack.load(); // .load() is often not needed when changing src, browser handles it.
         }
 
         // Initial Load
