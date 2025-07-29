@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyBase - The Ultimate AI Study Hub</title>
+    <title>StudyBase - Advanced AI Study Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         :root {
@@ -15,7 +17,7 @@
             --font-ar: 'Cairo', sans-serif;
         }
         body {
-            background-color: #0B0B0F;
+            background-color: #0A0A0A;
             color: #E4E4E7;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
@@ -24,7 +26,7 @@
         html[lang="ar"] body { font-family: var(--font-ar); }
 
         .sidebar {
-            background-color: #101014;
+            background-color: #121212;
             border-right: 1px solid #27272A;
         }
         html[dir="rtl"] .sidebar {
@@ -32,9 +34,9 @@
             border-left: 1px solid #27272A;
         }
         .main-content {
-            background-color: #0B0B0F;
+            background-color: #0A0A0A;
         }
-        .feature-card, .main-title, .main-subtitle, .guest-btn-container {
+        .animated-element {
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 0.6s forwards;
@@ -51,7 +53,7 @@
             backdrop-filter: blur(5px);
         }
         .modal-content-area {
-             background-color: #101014;
+             background-color: #121212;
              border: 1px solid #27272A;
         }
         .btn-primary {
@@ -78,6 +80,9 @@
         .task-item.completed span {
             text-decoration: line-through;
         }
+        #music-player {
+            transition: transform 0.3s ease;
+        }
     </style>
 </head>
 <body class="flex h-screen">
@@ -87,28 +92,23 @@
         <div>
             <h1 class="text-2xl font-bold text-white mb-8">StudyBase</h1>
             <nav class="flex flex-col">
-                <h3 class="sidebar-heading" data-lang-key="sidebar_study_learning">Study & Learning</h3>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="summarize"><i class="fas fa-file-alt w-5 text-center"></i><span data-lang-key="feature_title_summarize">Text Summarizer</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="flashcards"><i class="fas fa-layer-group w-5 text-center"></i><span data-lang-key="feature_title_flashcards">Flashcard Generator</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="explain_concept"><i class="fas fa-brain w-5 text-center"></i><span data-lang-key="feature_title_explain_concept">Concept Explainer</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="quiz_generator"><i class="fas fa-question-circle w-5 text-center"></i><span data-lang-key="feature_title_quiz_generator">Quiz Generator</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="tutor"><i class="fas fa-user-graduate w-5 text-center"></i><span data-lang-key="feature_title_tutor">AI Tutor</span></a>
+                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-page="dashboard"><i class="fas fa-chart-pie w-5 text-center"></i><span data-lang-key="page_title_dashboard">Dashboard</span></a>
                 
-                <h3 class="sidebar-heading" data-lang-key="sidebar_time_management">Time Management</h3>
+                <h3 class="sidebar-heading" data-lang-key="sidebar_planning">Planning & Focus</h3>
+                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="ai_study_plan"><i class="fas fa-calendar-alt w-5 text-center"></i><span data-lang-key="feature_title_ai_study_plan">AI Study Plan Generator</span></a>
                 <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="pomodoro"><i class="fas fa-clock w-5 text-center"></i><span data-lang-key="feature_title_pomodoro">Pomodoro Timer</span></a>
+
+                <h3 class="sidebar-heading" data-lang-key="sidebar_learning_tools">Learning Tools</h3>
+                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="summarize"><i class="fas fa-file-alt w-5 text-center"></i><span data-lang-key="feature_title_summarize">Text Summarizer</span></a>
+                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="quiz_generator"><i class="fas fa-question-circle w-5 text-center"></i><span data-lang-key="feature_title_quiz_generator">AI Quiz Maker</span></a>
+                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="tutor"><i class="fas fa-user-graduate w-5 text-center"></i><span data-lang-key="feature_title_tutor">AI Tutor</span></a>
+                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="speaking_practice"><i class="fas fa-microphone-alt w-5 text-center"></i><span data-lang-key="feature_title_speaking_practice">Speaking Practice</span></a>
 
                 <h3 class="sidebar-heading" data-lang-key="sidebar_writing_research">Writing & Research</h3>
                 <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="essay_assistant"><i class="fas fa-pen-nib w-5 text-center"></i><span data-lang-key="feature_title_essay_assistant">Essay Assistant</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="paraphraser"><i class="fas fa-random w-5 text-center"></i><span data-lang-key="feature_title_paraphraser">Paraphrasing Tool</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="reference_generator"><i class="fas fa-book w-5 text-center"></i><span data-lang-key="feature_title_reference_generator">Reference Generator</span></a>
-
-                <h3 class="sidebar-heading" data-lang-key="sidebar_course_help">Course Help</h3>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="math_solver"><i class="fas fa-calculator w-5 text-center"></i><span data-lang-key="feature_title_math_solver">Math Problem Solver</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="code_explainer"><i class="fas fa-code w-5 text-center"></i><span data-lang-key="feature_title_code_explainer">Code Explainer</span></a>
                 
                 <h3 class="sidebar-heading" data-lang-key="sidebar_career_prep">Career Prep</h3>
                 <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="resume_builder"><i class="fas fa-file-invoice w-5 text-center"></i><span data-lang-key="feature_title_resume_builder">AI Resume Builder</span></a>
-                <a href="#" class="flex items-center space-x-3 text-zinc-400 hover:text-white py-2" data-feature="interview_prep"><i class="fas fa-comments w-5 text-center"></i><span data-lang-key="feature_title_interview_prep">Interview Practice</span></a>
             </nav>
         </div>
         <div>
@@ -120,38 +120,8 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="main-content flex-1 flex flex-col overflow-y-auto">
-        <header class="p-6 flex justify-between items-center">
-             <h1 class="text-2xl font-bold text-white md:hidden">StudyBase</h1>
-             <button id="lang-switcher" class="px-4 py-2 text-sm font-semibold bg-zinc-800 rounded-md hover:bg-zinc-700">العربية</button>
-             <button id="mobile-menu-button" class="md:hidden"><i class="fas fa-bars text-xl"></i></button>
-        </header>
-
-        <main class="flex-1 p-6 md:p-12">
-            <div class="text-center">
-                <h2 class="text-4xl md:text-6xl font-extrabold text-white leading-tight main-title" data-lang-key="main_title">
-                    The Future of <br/> Learning is Here
-                </h2>
-                <p class="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto main-subtitle" data-lang-key="main_subtitle" style="animation-delay: 0.1s;">
-                    Leverage the power of AI for everything from summarizing articles and generating flashcards to acing your next interview.
-                </p>
-                <div class="mt-10 guest-btn-container" style="animation-delay: 0.2s;">
-                    <button id="guest-btn" class="px-8 py-4 text-lg font-semibold rounded-lg text-white btn-primary" data-lang-key="explore_tools">
-                        Explore The Tools
-                    </button>
-                </div>
-            </div>
-
-            <div id="features" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-20">
-                <!-- Feature Cards -->
-                <div class="feature-card p-6 rounded-xl cursor-pointer" data-feature="summarize" style="animation-delay: 0.3s;"><i class="fas fa-file-alt text-2xl text-blue-400 mb-4"></i><h4 class="text-xl font-semibold mb-2 text-white" data-lang-key="feature_title_summarize">Text Summarizer</h4><p class="text-zinc-400" data-lang-key="feature_desc_summarize">Condense long articles into key points.</p></div>
-                <div class="feature-card p-6 rounded-xl cursor-pointer" data-feature="quiz_generator" style="animation-delay: 0.4s;"><i class="fas fa-question-circle text-2xl text-green-400 mb-4"></i><h4 class="text-xl font-semibold mb-2 text-white" data-lang-key="feature_title_quiz_generator">Quiz Generator</h4><p class="text-zinc-400" data-lang-key="feature_desc_quiz_generator">Create practice tests from any material.</p></div>
-                <div class="feature-card p-6 rounded-xl cursor-pointer" data-feature="pomodoro" style="animation-delay: 0.5s;"><i class="fas fa-clock text-2xl text-orange-400 mb-4"></i><h4 class="text-xl font-semibold mb-2 text-white" data-lang-key="feature_title_pomodoro">Pomodoro Timer</h4><p class="text-zinc-400" data-lang-key="feature_desc_pomodoro">Boost focus with timed study sessions.</p></div>
-                <div class="feature-card p-6 rounded-xl cursor-pointer" data-feature="essay_assistant" style="animation-delay: 0.6s;"><i class="fas fa-pen-nib text-2xl text-yellow-400 mb-4"></i><h4 class="text-xl font-semibold mb-2 text-white" data-lang-key="feature_title_essay_assistant">Essay Assistant</h4><p class="text-zinc-400" data-lang-key="feature_desc_essay_assistant">Get help with structure, thesis, and proofreading.</p></div>
-                <div class="feature-card p-6 rounded-xl cursor-pointer" data-feature="code_explainer" style="animation-delay: 0.7s;"><i class="fas fa-code text-2xl text-indigo-400 mb-4"></i><h4 class="text-xl font-semibold mb-2 text-white" data-lang-key="feature_title_code_explainer">Code Explainer</h4><p class="text-zinc-400" data-lang-key="feature_desc_code_explainer">Understand any code snippet, line by line.</p></div>
-                <div class="feature-card p-6 rounded-xl cursor-pointer" data-feature="resume_builder" style="animation-delay: 0.8s;"><i class="fas fa-file-invoice text-2xl text-purple-400 mb-4"></i><h4 class="text-xl font-semibold mb-2 text-white" data-lang-key="feature_title_resume_builder">AI Resume Builder</h4><p class="text-zinc-400" data-lang-key="feature_desc_resume_builder">Craft the perfect resume for your dream job.</p></div>
-            </div>
-        </main>
+    <div id="main-content-area" class="main-content flex-1 flex flex-col overflow-y-auto">
+        <!-- This will be populated by JS -->
     </div>
 
     <!-- Feature Modal -->
@@ -165,108 +135,82 @@
     <!-- Auth Modal & Mobile Menu Modal -->
     <div id="auth-modal" class="modal fixed inset-0 flex items-center justify-center z-50 p-4"><div class="modal-content-area rounded-lg shadow-2xl w-full max-w-md text-center p-8"><h3 class="text-2xl font-bold text-white mb-4" data-lang-key="auth_modal_title">Create an Account to Save</h3><p class="text-zinc-400 mb-6" data-lang-key="auth_modal_desc">Sign up to save your history and unlock all features.</p><button class="w-full px-6 py-3 text-white font-semibold rounded-lg btn-primary" data-lang-key="auth_modal_signup">Sign Up Now</button><button id="auth-modal-close-btn" class="mt-4 text-zinc-500 hover:text-zinc-300" data-lang-key="auth_modal_later">Maybe Later</button></div></div>
     <div id="mobile-menu-modal" class="modal fixed inset-0 z-50"><div class="sidebar w-72 h-full p-6 flex flex-col justify-between"><div id="mobile-nav-content"></div><div><button id="mobile-login-signup-btn" class="w-full text-left flex items-center space-x-3 text-zinc-400 hover:text-white"><i class="fas fa-user-circle w-5 text-center"></i><span data-lang-key="login_signup">Login / Sign Up</span></button></div></div></div>
-    <audio id="alarm-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+    
+    <!-- Music Player -->
+    <div id="music-player" class="fixed bottom-5 right-5 bg-zinc-800 p-3 rounded-lg shadow-lg flex items-center gap-4 transform translate-y-24">
+        <button id="music-play-pause" class="text-xl"><i class="fas fa-play"></i></button>
+        <div class="text-sm">
+            <div id="music-title" class="font-semibold">Lofi Chill</div>
+            <div class="text-zinc-400">Focus Mix</div>
+        </div>
+        <button id="music-next" class="text-lg"><i class="fas fa-forward"></i></button>
+    </div>
+
+    <!-- Audio files for sound effects -->
+    <audio id="alarm-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_593d052b1b.mp3" preload="auto"></audio>
+    <audio id="task-complete-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_23b3757271.mp3" preload="auto"></audio>
+    <audio id="celebration-sound" src="https://cdn.pixabay.com/download/audio/2022/09/23/audio_27b4a3b60e.mp3" preload="auto"></audio>
+    <audio id="music-track"></audio>
 
     <script>
         // --- LANGUAGE DATA STORE ---
         const langData = {
             en: {
-                // Titles & Headings
-                page_title: "StudyBase - The Ultimate AI Study Hub",
+                page_title_dashboard: "Dashboard",
+                sidebar_planning: "Planning & Focus",
+                sidebar_learning_tools: "Learning Tools",
                 main_title: "The Future of <br/> Learning is Here",
-                sidebar_study_learning: "Study & Learning",
-                sidebar_time_management: "Time Management",
-                sidebar_writing_research: "Writing & Research",
-                sidebar_course_help: "Course Help",
-                sidebar_career_prep: "Career Prep",
-                modal_feature_title: "Feature",
-                auth_modal_title: "Create an Account to Save",
-
-                // Subtitles & Descriptions
                 main_subtitle: "Leverage the power of AI for everything from summarizing articles and generating flashcards to acing your next interview.",
-                auth_modal_desc: "Sign up to save your history and unlock all features.",
-                
-                // Buttons & Links
                 explore_tools: "Explore The Tools",
                 login_signup: "Login / Sign Up",
+                auth_modal_title: "Create an Account to Save",
+                auth_modal_desc: "Sign up to save your history and unlock all features.",
                 auth_modal_signup: "Sign Up Now",
                 auth_modal_later: "Maybe Later",
-                lang_switcher_en: "English",
                 lang_switcher_ar: "العربية",
-
-                // Feature Cards Descriptions
-                feature_desc_summarize: "Condense long articles into key points.",
-                feature_desc_quiz_generator: "Create practice tests from any material.",
-                feature_desc_pomodoro: "Boost focus with timed study sessions.",
-                feature_desc_essay_assistant: "Get help with structure, thesis, and proofreading.",
-                feature_desc_code_explainer: "Understand any code snippet, line by line.",
-                feature_desc_resume_builder: "Craft the perfect resume for your dream job.",
             },
             ar: {
-                // Titles & Headings
-                page_title: "StudyBase - مركز الدراسة الذكي",
+                page_title_dashboard: "لوحة التحكم",
+                sidebar_planning: "التخطيط والتركيز",
+                sidebar_learning_tools: "أدوات التعلم",
                 main_title: "مستقبل التعليم <br/> هنا",
-                sidebar_study_learning: "دراسة وتعلم",
-                sidebar_time_management: "إدارة الوقت",
-                sidebar_writing_research: "كتابة وبحث",
-                sidebar_course_help: "مساعدة في المواد",
-                sidebar_career_prep: "تحضير للمهنة",
-                modal_feature_title: "الميزة",
-                auth_modal_title: "أنشئ حسابًا للحفظ",
-
-                // Subtitles & Descriptions
                 main_subtitle: "استفد من قوة الذكاء الاصطناعي في كل شيء، من تلخيص المقالات وإنشاء البطاقات التعليمية إلى التفوق في مقابلتك التالية.",
-                auth_modal_desc: "سجل لحفظ سجلك وفتح جميع الميزات.",
-
-                // Buttons & Links
                 explore_tools: "استكشف الأدوات",
                 login_signup: "تسجيل الدخول / اشتراك",
+                auth_modal_title: "أنشئ حسابًا للحفظ",
+                auth_modal_desc: "سجل لحفظ سجلك وفتح جميع الميزات.",
                 auth_modal_signup: "اشترك الآن",
                 auth_modal_later: "ربما لاحقًا",
                 lang_switcher_en: "English",
-                lang_switcher_ar: "العربية",
-
-                // Feature Cards Descriptions
-                feature_desc_summarize: "لخص المقالات الطويلة في نقاط رئيسية.",
-                feature_desc_quiz_generator: "أنشئ اختبارات تدريبية من أي مادة.",
-                feature_desc_pomodoro: "عزز تركيزك بجلسات دراسية محددة بوقت.",
-                feature_desc_essay_assistant: "احصل على مساعدة في الهيكل، الأطروحة، والتدقيق.",
-                feature_desc_math_solver: "حل مسائل الرياضيات المعقدة خطوة بخطوة.",
-                feature_desc_code_explainer: "افهم أي مقطع برمجي، سطراً بسطر.",
-                feature_desc_resume_builder: "اصنع السيرة الذاتية المثالية لوظيفة أحلامك.",
             }
         };
 
         const featuresData = {
             en: {
-                summarize: { title: 'Text Summarizer', desc: 'Condense long articles, papers, or notes into key bullet points or a concise paragraph.', placeholder: 'Paste your text here...', button: 'Summarize Text' },
-                flashcards: { title: 'Flashcard Generator', desc: 'Automatically create study cards from your notes. The AI will identify key terms and definitions.', placeholder: 'Paste your notes here...', button: 'Generate Flashcards' },
-                explain_concept: { title: 'Concept Explainer', desc: 'Struggling with a difficult topic? Enter it below and get a simple, easy-to-understand explanation.', placeholder: 'e.g., Photosynthesis, General Relativity...', button: 'Explain Concept' },
-                quiz_generator: { title: 'Quiz Generator', desc: 'Test your knowledge. Paste your study material and the AI will generate a multiple-choice quiz.', placeholder: 'Paste your study material here...', button: 'Generate Quiz' },
+                ai_study_plan: { title: 'AI Study Plan Generator', desc: 'Describe your goals, deadlines, and free time. AI will create a personalized study plan.', placeholder: 'e.g., I have a Biology final in 3 weeks and a presentation next Monday. I can study on weekday evenings and weekends.', button: 'Generate My Plan' },
+                pomodoro: { title: 'Pomodoro Timer', desc: 'Boost your focus with the Pomodoro Technique.', work: 'Work', short_break: 'Short Break', long_break: 'Long Break', start: 'Start', pause: 'Pause', reset: 'Reset', tasks_title: 'Session Tasks', add_task_placeholder: 'Add a new task...' },
+                summarize: { title: 'Text Summarizer', desc: 'Condense long articles, papers, or notes into key bullet points.', placeholder: 'Paste your text here...', button: 'Summarize Text' },
+                quiz_generator: { title: 'AI Quiz Maker', desc: 'Test your knowledge. Paste your study material to generate a multiple-choice quiz.', placeholder: 'Paste your study material here...', button: 'Generate Quiz' },
                 tutor: { title: 'AI Tutor', desc: 'Your 24/7 homework helper. Ask any academic question and get a detailed answer.', placeholder: 'e.g., What were the main causes of the French Revolution?', button: 'Ask Question' },
-                pomodoro: { title: 'Pomodoro Timer', desc: 'Boost your focus with the Pomodoro Technique. Set timers for work sessions and breaks.', work: 'Work', short_break: 'Short Break', long_break: 'Long Break', start: 'Start', pause: 'Pause', reset: 'Reset', tasks_title: 'Session Tasks', add_task_placeholder: 'Add a new task...' },
-                essay_assistant: { title: 'Essay Assistant', desc: 'Beat writer\'s block. Provide a topic or a draft to get help with outlines, thesis statements, or counter-arguments.', placeholder: 'Enter your essay topic or paste your draft here...', button: 'Get Assistance' },
-                paraphraser: { title: 'Paraphrasing Tool', desc: 'Reword sentences or paragraphs to avoid plagiarism and improve clarity. Paste your text below.', placeholder: 'Paste your text here...', button: 'Paraphrase' },
-                reference_generator: { title: 'Reference Generator', desc: 'Generate citations instantly. Provide source information and specify the format.', placeholder: 'Source info: author, title, year, etc.', button: 'Generate Citation', style_placeholder: 'Citation Style (e.g., APA, MLA)' },
-                math_solver: { title: 'Math Problem Solver', desc: 'Get step-by-step solutions to math problems, from algebra to calculus.', placeholder: 'e.g., Solve for x: 2x + 5 = 15', button: 'Solve Problem' },
-                code_explainer: { title: 'Code Explainer', desc: 'Paste any code snippet to get a detailed, line-by-line explanation of how it works.', placeholder: 'Paste your code here...', button: 'Explain Code' },
-                resume_builder: { title: 'AI Resume Builder', desc: 'Craft compelling, professional bullet points for your resume. Paste the job description and your experience.', placeholder: 'Paste job description and/or your experience notes...', button: 'Generate Bullet Points', job_placeholder: 'Target Job Title (e.g., Software Engineer)' },
-                interview_prep: { title: 'Interview Practice', desc: 'Prepare for your next interview. Enter a job role, and the AI will generate common interview questions.', placeholder: 'Enter Job Role (e.g., Marketing Analyst)', button: 'Get Questions' },
+                speaking_practice: { title: 'Speaking Practice', desc: 'Practice your conversational skills. Choose a topic to discuss with the AI.', placeholder: 'Enter a topic, e.g., "travel" or "technology"', button: 'Start Conversation' },
+                essay_assistant: { title: 'Essay Assistant', desc: 'Beat writer\'s block. Get help with outlines, thesis statements, or counter-arguments.', placeholder: 'Enter your essay topic or paste your draft here...', button: 'Get Assistance' },
+                courses: { title: 'Course Tips', desc: 'Enter a course name to get helpful tips, key concepts, and study strategies.', placeholder: 'e.g., "Calculus II" or "Intro to Psychology"', button: 'Get Tips' },
+                math_solver: { title: 'Math Problem Solver', desc: 'Get step-by-step solutions to math problems.', placeholder: 'e.g., Solve for x: 2x + 5 = 15', button: 'Solve Problem' },
+                code_explainer: { title: 'Code Explainer', desc: 'Paste any code snippet to get a detailed, line-by-line explanation.', placeholder: 'Paste your code here...', button: 'Explain Code' },
+                resume_builder: { title: 'AI Resume Builder', desc: 'Craft compelling, professional bullet points for your resume.', placeholder: 'Paste job description and/or your experience notes...', button: 'Generate Bullet Points', job_placeholder: 'Target Job Title' },
             },
             ar: {
-                summarize: { title: 'ملخص نصوص', desc: 'لخص المقالات الطويلة أو الأبحاث أو الملاحظات في نقاط رئيسية أو فقرة موجزة.', placeholder: 'الصق النص هنا...', button: 'لخص النص' },
-                flashcards: { title: 'منشئ بطاقات تعليمية', desc: 'أنشئ بطاقات دراسية تلقائيًا من ملاحظاتك. سيتعرف الذكاء الاصطناعي على المصطلحات والتعريفات الرئيسية.', placeholder: 'الصق ملاحظاتك هنا...', button: 'أنشئ بطاقات' },
-                explain_concept: { title: 'شرح المفاهيم', desc: 'هل تواجه صعوبة في موضوع ما؟ أدخله أدناه واحصل على شرح بسيط وسهل الفهم.', placeholder: 'مثال: التمثيل الضوئي، النسبية العامة...', button: 'اشرح المفهوم' },
-                quiz_generator: { title: 'منشئ اختبارات', desc: 'اختبر معلوماتك. الصق مادة الدراسة الخاصة بك وسيقوم الذكاء الاصطناعي بإنشاء اختبار متعدد الخيارات.', placeholder: 'الصق مادة الدراسة هنا...', button: 'أنشئ اختبارًا' },
+                ai_study_plan: { title: 'منشئ خطة دراسية ذكي', desc: 'صف أهدافك ومواعيدك النهائية ووقت فراغك. سينشئ الذكاء الاصطناعي خطة دراسة مخصصة.', placeholder: 'مثال: لدي امتحان أحياء نهائي بعد 3 أسابيع وعرض تقديمي يوم الاثنين القادم. يمكنني الدراسة في أمسيات أيام الأسبوع وعطلات نهاية الأسبوع.', button: 'أنشئ خطتي' },
+                pomodoro: { title: 'مؤقت بومودورو', desc: 'عزز تركيزك باستخدام تقنية بومودورو.', work: 'عمل', short_break: 'استراحة قصيرة', long_break: 'استراحة طويلة', start: 'ابدأ', pause: 'إيقاف مؤقت', reset: 'إعادة ضبط', tasks_title: 'مهام الجلسة', add_task_placeholder: 'أضف مهمة جديدة...' },
+                summarize: { title: 'ملخص نصوص', desc: 'لخص المقالات الطويلة أو الأبحاث أو الملاحظات في نقاط رئيسية.', placeholder: 'الصق النص هنا...', button: 'لخص النص' },
+                quiz_generator: { title: 'صانع اختبارات ذكي', desc: 'اختبر معلوماتك. الصق مادة الدراسة الخاصة بك لإنشاء اختبار متعدد الخيارات.', placeholder: 'الصق مادة الدراسة هنا...', button: 'أنشئ اختبارًا' },
                 tutor: { title: 'مدرس ذكاء اصطناعي', desc: 'مساعدك في الواجبات المنزلية على مدار الساعة. اطرح أي سؤال أكاديمي واحصل على إجابة مفصلة.', placeholder: 'مثال: ما هي الأسباب الرئيسية للثورة الفرنسية؟', button: 'اطرح سؤالاً' },
-                pomodoro: { title: 'مؤقت بومودورو', desc: 'عزز تركيزك باستخدام تقنية بومودورو. اضبط مؤقتات لجلسات العمل والاستراحات.', work: 'عمل', short_break: 'استراحة قصيرة', long_break: 'استراحة طويلة', start: 'ابدأ', pause: 'إيقاف مؤقت', reset: 'إعادة ضبط', tasks_title: 'مهام الجلسة', add_task_placeholder: 'أضف مهمة جديدة...' },
-                essay_assistant: { title: 'مساعد المقالات', desc: 'تغلب على حصار الكاتب. قدم موضوعًا أو مسودة للحصول على مساعدة في الخطوط العريضة والأطروحات والحجج المضادة.', placeholder: 'أدخل موضوع مقالتك أو الصق مسودتك هنا...', button: 'احصل على مساعدة' },
-                paraphraser: { title: 'أداة إعادة الصياغة', desc: 'أعد صياغة الجمل أو الفقرات لتجنب الانتحال وتحسين الوضوح. الصق النص أدناه.', placeholder: 'الصق النص هنا...', button: 'أعد الصياغة' },
-                reference_generator: { title: 'منشئ المراجع', desc: 'أنشئ الاستشهادات على الفور. قدم معلومات المصدر وحدد التنسيق.', placeholder: 'معلومات المصدر: المؤلف، العنوان، السنة، إلخ.', button: 'أنشئ مرجعًا', style_placeholder: 'نمط التوثيق (مثال: APA, MLA)' },
-                math_solver: { title: 'حل مسائل الرياضيات', desc: 'احصل على حلول خطوة بخطوة لمسائل الرياضيات، من الجبر إلى التفاضل والتكامل.', placeholder: 'مثال: حل لـ س: 2س + 5 = 15', button: 'حل المسألة' },
-                code_explainer: { title: 'شرح الأكواد', desc: 'الصق أي مقطع برمجي للحصول على شرح مفصل سطرًا بسطر لكيفية عمله.', placeholder: 'الصق الكود هنا...', button: 'اشرح الكود' },
-                resume_builder: { title: 'باني السيرة الذاتية الذكي', desc: 'صياغة نقاط قوية واحترافية لسيرتك الذاتية. الصق وصف الوظيفة وخبرتك.', placeholder: 'الصق وصف الوظيفة و/أو ملاحظات خبرتك...', button: 'أنشئ نقاط السيرة الذاتية', job_placeholder: 'المسمى الوظيفي المستهدف (مثال: مهندس برمجيات)' },
-                interview_prep: { title: 'التحضير للمقابلة', desc: 'استعد لمقابلتك التالية. أدخل دورًا وظيفيًا، وسيقوم الذكاء الاصطناعي بإنشاء أسئلة مقابلة شائعة.', placeholder: 'أدخل الدور الوظيفي (مثال: محلل تسويق)', button: 'احصل على أسئلة' },
+                speaking_practice: { title: 'ممارسة التحدث', desc: 'مارس مهاراتك في المحادثة. اختر موضوعًا للمناقشة مع الذكاء الاصطناعي.', placeholder: 'أدخل موضوعًا، مثل "السفر" أو "التكنولوجيا"', button: 'ابدأ المحادثة' },
+                essay_assistant: { title: 'مساعد المقالات', desc: 'تغلب على حصار الكاتب. احصل على مساعدة في الخطوط العريضة والأطروحات والحجج المضادة.', placeholder: 'أدخل موضوع مقالتك أو الصق مسودتك هنا...', button: 'احصل على مساعدة' },
+                courses: { title: 'نصائح للمواد', desc: 'أدخل اسم مادة للحصول على نصائح مفيدة ومفاهيم رئيسية واستراتيجيات دراسة.', placeholder: 'مثال: "حساب التفاضل والتكامل 2"', button: 'احصل على نصائح' },
+                math_solver: { title: 'حل مسائل الرياضيات', desc: 'احصل على حلول خطوة بخطوة لمسائل الرياضيات.', placeholder: 'مثال: حل لـ س: 2س + 5 = 15', button: 'حل المسألة' },
+                code_explainer: { title: 'شرح الأكواد', desc: 'الصق أي مقطع برمجي للحصول على شرح مفصل سطرًا بسطر.', placeholder: 'الصق الكود هنا...', button: 'اشرح الكود' },
+                resume_builder: { title: 'باني السيرة الذاتية الذكي', desc: 'صياغة نقاط قوية واحترافية لسيرتك الذاتية.', placeholder: 'الصق وصف الوظيفة و/أو ملاحظات خبرتك...', button: 'أنشئ نقاط السيرة الذاتية', job_placeholder: 'المسمى الوظيفي المستهدف' },
             }
         };
         
@@ -274,10 +218,13 @@
         let currentLang = 'en';
         let isGuest = false;
         let currentUser = null;
+        let userPoints = 0;
+        let userStreak = 0;
         const supabaseUrl = 'https://djsuwmyvobfwxfghjuky.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqc3V3bXl2b2Jmd3hmZ2hqdWt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM3ODExODQsImV4cCI6MjA2OTM1NzE4NH0.Zd5LyNb3UAL2_PwTb8o1BFhMB0UNuvp6TLkQb9ntMjA';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+        const mainContentArea = document.getElementById('main-content-area');
         const featureModal = document.getElementById('feature-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalContent = document.getElementById('modal-content');
@@ -285,18 +232,29 @@
         const authModal = document.getElementById('auth-modal');
         const closeAuthModalBtn = document.getElementById('auth-modal-close-btn');
         const mobileMenuModal = document.getElementById('mobile-menu-modal');
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const guestBtn = document.getElementById('guest-btn');
         const allFeatureLinks = document.querySelectorAll('[data-feature]');
-        const langSwitcher = document.getElementById('lang-switcher');
         const alarmSound = document.getElementById('alarm-sound');
+        const taskCompleteSound = document.getElementById('task-complete-sound');
+        const celebrationSound = document.getElementById('celebration-sound');
+        
+        const musicPlayer = document.getElementById('music-player');
+        const musicTrack = document.getElementById('music-track');
+        const musicPlayPauseBtn = document.getElementById('music-play-pause');
+        const musicNextBtn = document.getElementById('music-next');
+        const musicTitle = document.getElementById('music-title');
+
+        const musicTracks = [
+            { title: "Lofi Chill", src: "https://cdn.pixabay.com/download/audio/2022/11/21/audio_a1bf890664.mp3" },
+            { title: "Classical Focus", src: "https://cdn.pixabay.com/download/audio/2022/10/20/audio_b6a5059296.mp3" },
+            { title: "Ambient Waves", src: "https://cdn.pixabay.com/download/audio/2022/09/22/audio_5a17dc7d38.mp3" }
+        ];
+        let currentTrackIndex = 0;
 
         const openModal = (modalElement) => modalElement.style.display = 'flex';
         const closeModal = (modalElement) => modalElement.style.display = 'none';
 
         closeModalBtn.addEventListener('click', () => closeModal(featureModal));
         closeAuthModalBtn.addEventListener('click', () => closeModal(authModal));
-        mobileMenuButton.addEventListener('click', () => openModal(mobileMenuModal));
         
         window.addEventListener('click', (event) => {
             if (event.target === featureModal) closeModal(featureModal);
@@ -316,32 +274,10 @@
                     el.innerHTML = data[key];
                 }
             });
-
-            document.querySelectorAll('.feature-card[data-feature]').forEach(card => {
-                const featureKey = card.dataset.feature;
-                const featureData = featuresData[lang][featureKey];
-                if (featureData) {
-                    card.querySelector('h4').textContent = featureData.title;
-                    card.querySelector('p').textContent = featureData.desc;
-                }
-            });
-
-             document.querySelectorAll('aside nav a[data-feature], #mobile-nav-content nav a[data-feature]').forEach(link => {
-                const featureKey = link.dataset.feature;
-                const featureData = featuresData[lang][featureKey];
-                if (featureData) {
-                    link.querySelector('span').textContent = featureData.title;
-                }
-            });
             
-            langSwitcher.textContent = lang === 'en' ? data.lang_switcher_ar : data.lang_switcher_en;
-            document.title = data.page_title;
+            document.title = data.page_title || "StudyBase";
+            renderPage(document.body.dataset.currentPage || 'dashboard');
         }
-
-        langSwitcher.addEventListener('click', () => {
-            const newLang = currentLang === 'en' ? 'ar' : 'en';
-            setLanguage(newLang);
-        });
         
         function setupMobileMenu() {
             const desktopSidebarContent = document.querySelector('aside .flex-col').innerHTML;
@@ -349,33 +285,146 @@
             mobileNavContent.innerHTML = `<div class="flex justify-between items-center mb-8"><h1 class="text-2xl font-bold text-white">StudyBase</h1><button id="mobile-menu-close-btn"><i class="fas fa-times text-xl"></i></button></div>` + desktopSidebarContent;
             document.getElementById('mobile-menu-close-btn').addEventListener('click', () => closeModal(mobileMenuModal));
             
-            mobileNavContent.querySelectorAll('[data-feature]').forEach(link => {
+            mobileNavContent.querySelectorAll('[data-feature], [data-page]').forEach(link => {
                  link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const featureKey = link.dataset.feature;
-                    openFeatureModal(features[featureKey]);
+                    if(link.dataset.feature) openFeatureModal(features[link.dataset.feature]);
+                    if(link.dataset.page) renderPage(link.dataset.page);
                     closeModal(mobileMenuModal);
                 });
             });
         }
+        
+        function updateGamificationDisplay() {
+            const pointsEl = document.getElementById('user-points');
+            const streakEl = document.getElementById('user-streak');
+            if (pointsEl) pointsEl.textContent = userPoints;
+            if (streakEl) streakEl.textContent = userStreak;
+        }
 
-        guestBtn.addEventListener('click', () => {
-            isGuest = true;
-            currentUser = null;
-            openFeatureModal(features['summarize']);
-        });
+        function addPoints(amount) {
+            userPoints += amount;
+            userStreak++; 
+            updateGamificationDisplay();
+        }
 
-        document.getElementById('login-signup-btn').addEventListener('click', () => openModal(authModal));
-        document.getElementById('mobile-login-signup-btn').addEventListener('click', () => {
-            closeModal(mobileMenuModal);
-            openModal(authModal);
-        });
+        function renderHeader() {
+            return `
+                <header class="p-6 flex justify-between items-center">
+                    <div class="flex items-center gap-6">
+                         <button id="mobile-menu-button-main" class="md:hidden"><i class="fas fa-bars text-xl"></i></button>
+                         <div class="hidden md:flex items-center gap-4 text-zinc-400">
+                            <div><i class="fas fa-star text-yellow-400"></i> <span id="user-points">${userPoints}</span></div>
+                            <div><i class="fas fa-fire text-orange-500"></i> <span id="user-streak">${userStreak}</span></div>
+                         </div>
+                    </div>
+                    <button id="lang-switcher-main" class="px-4 py-2 text-sm font-semibold bg-zinc-800 rounded-md hover:bg-zinc-700">${currentLang === 'en' ? 'العربية' : 'English'}</button>
+                </header>
+            `;
+        }
+        
+        function renderDashboard() {
+            document.body.dataset.currentPage = 'dashboard';
+            const featureKeys = ['summarize', 'quiz_generator', 'pomodoro', 'courses', 'code_explainer', 'resume_builder'];
+            
+            let featureCardsHtml = featureKeys.map((key, i) => {
+                const d = featuresData[currentLang][key] || featuresData['en'][key];
+                const iconMap = {
+                    summarize: 'fa-file-alt text-blue-400',
+                    quiz_generator: 'fa-question-circle text-green-400',
+                    pomodoro: 'fa-clock text-orange-400',
+                    courses: 'fa-school text-cyan-400',
+                    code_explainer: 'fa-code text-indigo-400',
+                    resume_builder: 'fa-file-invoice text-purple-400'
+                };
+                return `
+                <div class="feature-card animated-element p-6 rounded-xl cursor-pointer" data-feature="${key}" style="animation-delay: ${0.3 + i*0.1}s;">
+                    <i class="fas ${iconMap[key]} text-2xl mb-4"></i>
+                    <h4 class="text-xl font-semibold mb-2 text-white">${d.title}</h4>
+                    <p class="text-zinc-400">${d.desc}</p>
+                </div>`;
+            }).join('');
 
-        allFeatureLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+            mainContentArea.innerHTML = `
+                ${renderHeader()}
+                <main class="flex-1 p-6 md:p-12">
+                    <div class="text-center">
+                        <h2 class="text-4xl md:text-6xl font-extrabold text-white leading-tight animated-element" data-lang-key="main_title">${langData[currentLang].main_title}</h2>
+                        <p class="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto animated-element" data-lang-key="main_subtitle" style="animation-delay: 0.1s;">${langData[currentLang].main_subtitle}</p>
+                    </div>
+                    <div id="features" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-20">
+                        ${featureCardsHtml}
+                    </div>
+                </main>
+            `;
+            
+            mainContentArea.querySelectorAll('[data-feature]').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openFeatureModal(features[el.dataset.feature]);
+                });
+            });
+            document.getElementById('lang-switcher-main').addEventListener('click', () => {
+                const newLang = currentLang === 'en' ? 'ar' : 'en';
+                setLanguage(newLang);
+            });
+            document.getElementById('mobile-menu-button-main').addEventListener('click', () => openModal(mobileMenuModal));
+        }
+
+        function renderProductivityDashboard() {
+            document.body.dataset.currentPage = 'productivity';
+            mainContentArea.innerHTML = `
+                ${renderHeader()}
+                <main class="flex-1 p-6 md:p-12">
+                    <h2 class="text-3xl font-bold mb-8 animated-element" data-lang-key="page_title_dashboard">${langData[currentLang].page_title_dashboard}</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-zinc-900 p-6 rounded-lg animated-element" style="animation-delay: 0.1s;">
+                            <h3 class="font-semibold mb-4">Study Hours (Last 7 Days)</h3>
+                            <canvas id="study-hours-chart"></canvas>
+                        </div>
+                        <div class="bg-zinc-900 p-6 rounded-lg animated-element" style="animation-delay: 0.2s;">
+                             <h3 class="font-semibold mb-4">Upcoming Plan</h3>
+                             <div id="plan-calendar" class="text-zinc-400">Your generated study plan will appear here.</div>
+                        </div>
+                    </div>
+                </main>
+            `;
+            
+            const studyData = [1.5, 2, 0.5, 3, 1, 0, 2.5]; 
+            new Chart(document.getElementById('study-hours-chart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    datasets: [{
+                        label: 'Hours',
+                        data: studyData,
+                        backgroundColor: 'rgba(79, 70, 229, 0.6)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { scales: { y: { beginAtZero: true } } }
+            });
+            
+            document.getElementById('lang-switcher-main').addEventListener('click', () => {
+                const newLang = currentLang === 'en' ? 'ar' : 'en';
+                setLanguage(newLang);
+            });
+            document.getElementById('mobile-menu-button-main').addEventListener('click', () => openModal(mobileMenuModal));
+        }
+        
+        function renderPage(page) {
+            if (page === 'dashboard') {
+                renderProductivityDashboard();
+            } else {
+                renderDashboard();
+            }
+        }
+
+        document.querySelectorAll('[data-page]').forEach(link => {
+            link.addEventListener('click', e => {
                 e.preventDefault();
-                const featureKey = link.dataset.feature;
-                openFeatureModal(features[featureKey]);
+                renderPage(link.dataset.page);
             });
         });
 
@@ -424,11 +473,7 @@
         const commonOutputDiv = `<div id="ai-output" class="mt-6 p-4 bg-zinc-900 border border-zinc-700 rounded-md min-h-[100px] whitespace-pre-wrap"></div>`;
         
         const features = {
-            summarize: { key: 'summarize', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال نص لتلخيصه." : "Please enter text to summarize."; return; } const prompt = `Summarize the following text into key bullet points:\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            flashcards: { key: 'flashcards', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم مادة لإنشاء بطاقات منها." : "Please provide material to generate flashcards from."; return; } const prompt = `Generate flashcards from the following text. For each, provide a 'Term' and a 'Definition'. Format it clearly, like:\nTerm: [Term]\nDefinition: [Definition]\n---`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            explain_concept: { key: 'explain_concept', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال مفهوم لشرحه." : "Please enter a concept to explain."; return; } const prompt = `Explain the concept "${text}" in simple, clear terms, as if explaining to a high school student. Use analogies if helpful.`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            quiz_generator: { key: 'quiz_generator', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم مادة لإنشاء اختبار منها." : "Please provide material to generate a quiz from."; return; } const prompt = `Generate a 5-question multiple-choice quiz from the text below. For each question, provide 4 options (A, B, C, D) and indicate the correct answer.\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            tutor: { key: 'tutor', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء طرح سؤال." : "Please ask a question."; return; } const prompt = `Answer the following student question clearly and comprehensively: "${text}"`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
+            ai_study_plan: { key: 'ai_study_plan', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder, 'h-32')}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء وصف أهدافك." : "Please describe your goals."; return; } const prompt = `Act as an academic advisor. Create a weekly study plan based on the following student's goals and constraints. The output should be a clear, day-by-day schedule in a markdown table format.\n\nGoals: ${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
             pomodoro: {
                 key: 'pomodoro',
                 getContent: (d) => `
@@ -458,7 +503,7 @@
                 init: () => {
                     let timer;
                     let time = 25 * 60;
-                    let mode = 'work'; // work, short_break, long_break
+                    let mode = 'work';
                     let sessions = 0;
                     let isPaused = true;
 
@@ -485,6 +530,7 @@
                         alarmSound.play();
                         if (mode === 'work') {
                             sessions++;
+                            addPoints(25); // 25 points for a full pomodoro session
                             mode = (sessions % 4 === 0) ? 'long_break' : 'short_break';
                             time = (mode === 'long_break' ? 15 : 5) * 60;
                         } else {
@@ -505,24 +551,9 @@
                         }
                     };
 
-                    startBtn.addEventListener('click', () => {
-                        if (isPaused) {
-                            isPaused = false;
-                            timer = setInterval(tick, 1000);
-                        }
-                    });
-
-                    pauseBtn.addEventListener('click', () => {
-                        isPaused = true;
-                        clearInterval(timer);
-                    });
-
-                    resetBtn.addEventListener('click', () => {
-                        isPaused = true;
-                        clearInterval(timer);
-                        time = (mode === 'work' ? 25 : (mode === 'short_break' ? 5 : 15)) * 60;
-                        updateDisplay();
-                    });
+                    startBtn.addEventListener('click', () => { if (isPaused) { isPaused = false; timer = setInterval(tick, 1000); } });
+                    pauseBtn.addEventListener('click', () => { isPaused = true; clearInterval(timer); });
+                    resetBtn.addEventListener('click', () => { isPaused = true; clearInterval(timer); time = (mode === 'work' ? 25 : (mode === 'short_break' ? 5 : 15)) * 60; updateDisplay(); });
 
                     const renderTasks = () => {
                         taskList.innerHTML = '';
@@ -530,15 +561,20 @@
                         tasks.forEach((task, index) => {
                             const taskEl = document.createElement('div');
                             taskEl.className = `task-item flex items-center justify-between bg-zinc-800 p-2 rounded-md ${task.completed ? 'completed' : ''}`;
-                            taskEl.innerHTML = `
-                                <div class="flex items-center gap-3">
-                                    <input type="checkbox" data-index="${index}" ${task.completed ? 'checked' : ''} class="form-checkbox h-5 w-5 bg-zinc-900 border-zinc-700 rounded text-indigo-600">
-                                    <span>${task.text}</span>
-                                </div>
-                                <button data-index="${index}" class="text-red-500 hover:text-red-400">&times;</button>
-                            `;
+                            taskEl.innerHTML = `<div class="flex items-center gap-3"><input type="checkbox" data-index="${index}" ${task.completed ? 'checked' : ''} class="form-checkbox h-5 w-5 bg-zinc-900 border-zinc-700 rounded text-indigo-600"><span>${task.text}</span></div><button data-index="${index}" class="text-red-500 hover:text-red-400">&times;</button>`;
                             taskList.appendChild(taskEl);
                         });
+                        checkAllTasksCompleted();
+                    };
+                    
+                    const checkAllTasksCompleted = () => {
+                        const tasks = JSON.parse(localStorage.getItem('pomodoroTasks') || '[]');
+                        if (tasks.length > 0 && tasks.every(t => t.completed)) {
+                            celebrationSound.play();
+                            confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                            addPoints(50); // Bonus points for completing all tasks
+                            localStorage.removeItem('pomodoroTasks');
+                        }
                     };
 
                     addTaskBtn.addEventListener('click', () => {
@@ -556,8 +592,17 @@
                         const index = e.target.dataset.index;
                         if (e.target.type === 'checkbox') {
                             tasks[index].completed = e.target.checked;
+                            if(e.target.checked) {
+                                taskCompleteSound.play();
+                                addPoints(10);
+                            } else {
+                                userPoints -= 10; // remove points if unchecked
+                                updateGamificationDisplay();
+                            }
                         } else if (e.target.tagName === 'BUTTON') {
+                            if(tasks[index].completed) userPoints -= 10; // remove points if deleted while completed
                             tasks.splice(index, 1);
+                            updateGamificationDisplay();
                         }
                         localStorage.setItem('pomodoroTasks', JSON.stringify(tasks));
                         renderTasks();
@@ -567,20 +612,75 @@
                     renderTasks();
                 }
             },
+            // Other features remain the same, just add their keys
+            summarize: { key: 'summarize', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال نص لتلخيصه." : "Please enter text to summarize."; return; } const prompt = `Summarize the following text into key bullet points:\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
+            quiz_generator: { key: 'quiz_generator', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم مادة لإنشاء اختبار منها." : "Please provide material to generate a quiz from."; return; } const prompt = `Generate a 5-question multiple-choice quiz from the text below. For each question, provide 4 options (A, B, C, D) and indicate the correct answer.\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
+            tutor: { key: 'tutor', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء طرح سؤال." : "Please ask a question."; return; } const prompt = `Answer the following student question clearly and comprehensively: "${text}"`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
+            speaking_practice: { key: 'speaking_practice', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال موضوع." : "Please enter a topic."; return; } const prompt = `Start a conversation with me about "${text}". Ask me an open-ended question to begin.`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
             essay_assistant: { key: 'essay_assistant', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم موضوع أو مسودة." : "Please provide a topic or draft."; return; } const prompt = `Act as a writing tutor. Analyze the following essay topic/draft. Provide a potential thesis statement, a 3-point outline, and suggest one potential counter-argument to consider.\n\nTopic/Draft: ${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            paraphraser: { key: 'paraphraser', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال نص لإعادة صياغته." : "Please enter text to paraphrase."; return; } const prompt = `Paraphrase the following text, maintaining the original meaning but using different vocabulary and sentence structure:\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            reference_generator: { key: 'reference_generator', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="style-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md mb-2" placeholder="${d.style_placeholder}">${commonTextArea('text-input', d.placeholder, 'h-32')}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const style = document.getElementById('style-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim() || !style.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم معلومات المصدر ونمط التوثيق." : "Please provide source info and a citation style."; return; } const prompt = `Generate a citation in ${style} format based on the following information:\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            math_solver: { key: 'math_solver', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال مسألة رياضية." : "Please enter a math problem."; return; } const prompt = `Solve the following math problem. Provide a clear, step-by-step explanation of the solution process, followed by the final answer.\n\nProblem: ${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            code_explainer: { key: 'code_explainer', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p>${commonTextArea('code-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const code = document.getElementById('code-input').value; const outputDiv = document.getElementById('ai-output'); if (!code.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال كود." : "Please enter some code."; return; } const prompt = `Explain the following code snippet line by line. Use a friendly and clear tone, suitable for a beginner:\n\n\`\`\`\n${code}\n\`\`\``; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
+            courses: { key: 'courses', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال اسم المادة." : "Please enter a course name."; return; } const prompt = `I'm a student taking a course on "${text}". Provide me with 5 essential tips for success in this subject. Include key concepts I must master and suggest a helpful study strategy.`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
             resume_builder: { key: 'resume_builder', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="job-title-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md mb-2" placeholder="${d.job_placeholder}">${commonTextArea('text-input', d.placeholder)}${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const job = document.getElementById('job-title-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim() || !job.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء تقديم المسمى الوظيفي وبعض السياق." : "Please provide a job title and some context."; return; } const prompt = `Act as a professional resume writer. Based on the target job title "${job}" and the following information, generate 3-5 strong, action-oriented resume bullet points using the STAR (Situation, Task, Action, Result) method where possible:\n\n${text}`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
-            interview_prep: { key: 'interview_prep', getContent: (d) => `<p class="text-zinc-400 mb-4">${d.desc}</p><input type="text" id="text-input" class="w-full p-3 bg-zinc-900 border border-zinc-700 rounded-md" placeholder="${d.placeholder}">${commonButton('run-btn', d.button)}${commonOutputDiv}`, init: () => document.getElementById('run-btn').addEventListener('click', async () => { const text = document.getElementById('text-input').value; const outputDiv = document.getElementById('ai-output'); if (!text.trim()) { outputDiv.textContent = currentLang === 'ar' ? "الرجاء إدخال دور وظيفي." : "Please enter a job role."; return; } const prompt = `Generate a list of 5 common behavioral and 3 technical/situational interview questions for a "${text}" position. For each behavioral question, briefly mention what the interviewer is trying to assess.`; outputDiv.textContent = await callGemini(prompt, outputDiv); }) },
         };
         
+        // Music Player Logic
+        musicPlayPauseBtn.addEventListener('click', async () => {
+            if (musicTrack.paused) {
+                try {
+                    await musicTrack.play();
+                    musicPlayPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                } catch (error) {
+                    console.error("Error playing music:", error);
+                    musicPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            } else {
+                musicTrack.pause();
+                musicPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        musicNextBtn.addEventListener('click', async () => {
+            currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
+            loadTrack(currentTrackIndex);
+            try {
+                await musicTrack.play();
+                musicPlayPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } catch (error) {
+                console.error("Error playing next track:", error);
+                musicPlayPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        function loadTrack(index) {
+            musicTrack.src = musicTracks[index].src;
+            musicTitle.textContent = musicTracks[index].title;
+            // musicTrack.load(); // .load() is often not needed when changing src, browser handles it.
+        }
+
         // Initial Load
         window.onload = () => {
             document.body.style.opacity = 1;
             setupMobileMenu();
+            renderPage('dashboard');
             setLanguage('en');
+            loadTrack(currentTrackIndex);
+            
+            // Static listeners for elements that are always present
+            document.getElementById('login-signup-btn').addEventListener('click', () => openModal(authModal));
+            document.getElementById('mobile-login-signup-btn').addEventListener('click', () => {
+                closeModal(mobileMenuModal);
+                openModal(authModal);
+            });
+            document.querySelectorAll('aside [data-page], aside [data-feature]').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    if (link.dataset.page) renderPage(link.dataset.page);
+                    if (link.dataset.feature) openFeatureModal(features[link.dataset.feature]);
+                });
+            });
+
+            setTimeout(() => {
+                musicPlayer.style.transform = 'translateY(0)';
+            }, 1000);
         };
     </script>
 </body>
